@@ -1,4 +1,4 @@
-export default class AccountBook {
+module.exports = class AccountBook {
   constructor() {
     // TODO: These will need to be published in Grenache later
     this.accountBook = []; //owner, asset, amount, timestamp
@@ -54,16 +54,16 @@ export default class AccountBook {
   }
 
   generateInitialBalances() {
-    this.addBalance("Alice", "USD", 100);
-    this.addBalance("Bob", "USD", 50);
-    this.addBalance("Alice", "USD", 20);
-    this.addBalance("Bob", "USD", 300);
-    this.addBalance("Charlie", "USD", 1000);
-    // this.addBalance("Alice", "USD", -10);
-    this.addBalance("John", "BTC", 7);
-    this.addBalance("Paul", "BTC", 8);
+    this.addBalance("Pam", "USD", 100);
+    this.addBalance("Michael", "USD", 50);
+    this.addBalance("Pam", "USD", 20);
+    this.addBalance("Michael", "USD", 300);
+    this.addBalance("Jim", "USD", 1000);
+    // this.addBalance("Pam", "USD", -10);
+    this.addBalance("Dwight", "BTC", 7);
+    this.addBalance("Toby", "BTC", 8);
 
     //it should error
-    // this.addBalance("Charlie", "USD", -100000);
+    // this.addBalance("Jim", "USD", -100000);
   }
-}
+};

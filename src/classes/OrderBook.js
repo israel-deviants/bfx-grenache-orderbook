@@ -1,4 +1,4 @@
-export default class orderBook {
+module.exports = class orderBook {
   constructor() {
     // TODO: These will need to be published in Grenache later
     this.orders = []; //owner, action, market, currency, amount, orderType, price
@@ -47,12 +47,16 @@ export default class orderBook {
     });
   }
 
-  showOrders(market, currency) {
+  getOrders(market, currency) {
     const table = [];
     this.orders.forEach((order) => {
       if (market === order.market && currency === order.currency)
         table.push(order);
     });
-    console.table(table);
+    return table;
   }
-}
+
+  showOrders(market, currency) {
+    console.table(this.getOrders(market, currency));
+  }
+};
