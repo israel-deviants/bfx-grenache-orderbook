@@ -36,24 +36,34 @@ export default class AccountBook {
     console.table(this.accountBook);
   }
 
-  showBalances(asset) {
+  getBalances(asset) {
     const table = [];
 
     for (let account in this.accountBalances[asset]) {
-      table.push({ account, balance: this.accountBalances[asset][account] });
+      table.push({
+        account,
+        balance: this.accountBalances[asset][account],
+        asset,
+      });
     }
-    console.table(table);
+    return table;
+  }
+
+  showAllAssetBalances() {
+    console.table([...this.getBalances("USD"), ...this.getBalances("BTC")]);
   }
 
   generateInitialBalances() {
     this.addBalance("Alice", "USD", 100);
     this.addBalance("Bob", "USD", 50);
     this.addBalance("Alice", "USD", 20);
-    this.addBalance("Bob", "USD", 3);
-    this.addBalance("Charlie", "USD", 1);
-    this.addBalance("Alice", "USD", -10);
+    this.addBalance("Bob", "USD", 300);
+    this.addBalance("Charlie", "USD", 1000);
+    // this.addBalance("Alice", "USD", -10);
+    this.addBalance("John", "BTC", 7);
+    this.addBalance("Paul", "BTC", 8);
 
     //it should error
-    // this.addBalance("Charlie", "USD", -10);
+    // this.addBalance("Charlie", "USD", -100000);
   }
 }
