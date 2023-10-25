@@ -1,7 +1,12 @@
 "use strict";
 const { PeerRPCClient } = require("grenache-nodejs-ws");
 const Link = require("grenache-nodejs-link");
+
+//Mockup orders
 const mockupOrders = require("./mockups/orders.js");
+
+// This client will act as one of the users, it will place an order after some seconds,
+// then act as the second user user and place another order later
 
 var account = "Pam";
 //Console arguments
@@ -19,28 +24,37 @@ link.start();
 const peer = new PeerRPCClient(link, {});
 peer.init();
 
-requestOrderbook();
-
+//After all is set up for the client, will request the orderBook
 var orderBook = [];
 
-// MOCKUP ORDERS, every client will place an order in a random time
+function updateOrderbook(newOrderBook) {
+  // This is an inneficient way to update the orderbook.
+  // It would be better to just get the new transactions notified by the server
+  orderBook = newOrderBook;
+}
+
+requestOrderbook();
+
+//set a timer for the first and second order (5 seconds)
 setTimeout(() => {
   placeOrder(mockupOrders[account]);
 
-  //After placing an order, it will place another
+  //After placing an order, it will place another (10 seconds)
   if (process.argv.length > 2) {
     account = process.argv[3];
     console.log("I am", account);
 
     setTimeout(() => {
       placeOrder(mockupOrders[account]);
-    }, 3000 + Math.random() * 10000);
+    }, 10000);
   }
-}, 2000 + Math.random() * 5000);
+}, 3000);
 
+// This process will ask the new orderbook from the server in an interval
 var updateInterval;
-
 function scheduleUpdate() {
+  // clears the previous interval, this allows to call this
+  // function from anywhere and it will be canceled to be scheduled again
   clearInterval(updateInterval);
   updateInterval = setInterval(() => {
     requestOrderbook();
@@ -48,25 +62,15 @@ function scheduleUpdate() {
 }
 
 function placeOrder(payload) {
-  // console.log("placing order");
+  // console.log("ORDER", payload);
   peer.request(
     "orderbook_worker",
-    payload,
+    payload, //payload comes from the mockup
     { timeout: 100000 },
     (err, result) => {
       if (err) throw err;
-      console.log(
-        "placing order",
-        payload.owner,
-        payload.action,
-        payload.market,
-        payload.price,
-        payload.currency,
-        payload.amount
-      );
-      orderBook = result;
-
-      console.table(orderBook);
+      updateOrderbook(result);
+      // console.table(orderBook);
       scheduleUpdate();
     }
   );
@@ -75,17 +79,13 @@ function placeOrder(payload) {
 function requestOrderbook() {
   peer.request(
     "orderbook_worker",
-    {
-      function: "getOrders",
-    },
+    { function: "getOrders" },
     { timeout: 100000 },
     (err, result) => {
       if (err) throw err;
 
-      orderBook = result;
-
+      updateOrderbook(result);
       console.table(orderBook);
-
       scheduleUpdate();
     }
   );

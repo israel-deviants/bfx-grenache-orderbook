@@ -1,6 +1,5 @@
 module.exports = class AccountBook {
   constructor() {
-    // TODO: These will need to be published in Grenache later
     this.accountBook = []; //owner, asset, amount, timestamp
     this.accountBalances = []; //[asset][account] = amount
     this.initializeAssets();
@@ -9,7 +8,7 @@ module.exports = class AccountBook {
   initializeAssets = () => {
     this.accountBalances["USD"] = [];
     this.accountBalances["BTC"] = [];
-    this.accountBalances["ETC"] = [];
+    this.accountBalances["ETH"] = [];
   };
 
   addBalance(owner, asset, amount) {
@@ -62,6 +61,7 @@ module.exports = class AccountBook {
     // this.addBalance("Pam", "USD", -10);
     this.addBalance("Dwight", "BTC", 7);
     this.addBalance("Toby", "BTC", 8);
+    this.addBalance("Stanley", "USD", 800);
 
     //it should error
     // this.addBalance("Jim", "USD", -100000);

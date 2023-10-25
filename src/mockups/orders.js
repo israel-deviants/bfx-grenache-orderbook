@@ -52,5 +52,15 @@ mockupOrders["Toby"] = {
   orderType: "limit",
   price: 99,
 };
+mockupOrders["Stanley"] = {
+  function: "createOrder",
+  owner: "Stanley",
+  action: "bid",
+  market: "BTC",
+  currency: "USD",
+  amount: 1,
+  orderType: "limit",
+  price: 102,
+};
 
 module.exports = mockupOrders;

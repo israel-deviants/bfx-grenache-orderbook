@@ -1,19 +1,10 @@
 module.exports = class orderBook {
-  constructor() {
-    // TODO: These will need to be published in Grenache later
+  constructor(accountBook) {
     this.orders = []; //owner, action, market, currency, amount, orderType, price
+    this.accountBook = accountBook;
   }
 
-  createorder(
-    accountBook,
-    owner,
-    action,
-    market,
-    currency,
-    amount,
-    orderType,
-    price
-  ) {
+  createorder(owner, action, market, currency, amount, orderType, price) {
     // TODO: validations
     this.orders.push({
       owner,
@@ -25,17 +16,30 @@ module.exports = class orderBook {
       price,
     });
 
-    console.log(owner, action, market, currency, amount, orderType, price);
+    // console.log(owner, action, market, currency, amount, orderType, price);
 
     if (action === "bid") {
-      accountBook.addBalance(owner, currency, -(amount * price));
+      this.accountBook.addBalance(owner, currency, -(amount * price));
     } else {
-      accountBook.addBalance(owner, market, -amount);
+      this.accountBook.addBalance(owner, market, -amount);
+      // this.respondbidOrders(this.orders.length - 1);
     }
 
     this.sortOrders();
 
     //after the order enters, it checks at the opposite pair to execute matching orders
+  }
+
+  respondbidOrders() {
+    // WIP;
+
+    //This should iterate over all the orders that can fill this ask order
+    while (/* there are valid orders */ true == false) {
+      // get next order, substract amount
+      // if amount is 0, remove order target order
+      // if there are more to fill, continue
+      // else, remove this order
+    }
   }
 
   sortOrders() {
@@ -47,16 +51,20 @@ module.exports = class orderBook {
     });
   }
 
-  getOrders(market, currency) {
+  getOrders(market, currency, action = "all") {
     const table = [];
     this.orders.forEach((order) => {
-      if (market === order.market && currency === order.currency)
-        table.push(order);
+      if (market === order.market && currency === order.currency) {
+        if (action === "all" || action === order.action) table.push(order);
+      }
     });
     return table;
   }
 
   showOrders(market, currency) {
-    console.table(this.getOrders(market, currency));
+    console.table([
+      ...this.getOrders(market, currency, "bid"),
+      ...this.getOrders(market, currency, "ask"),
+    ]);
   }
 };
